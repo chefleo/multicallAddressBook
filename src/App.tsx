@@ -23,7 +23,8 @@ import { Form } from "../components/Form";
 import AddressesBook from "../components/AddressesBook";
 
 function App() {
-  const [inputFields, setInputFields] = useState([{ address: "", name: "" }]);
+  const initialState = [{ address: "", name: "" }];
+  const [inputFields, setInputFields] = useState(initialState);
 
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
@@ -109,6 +110,7 @@ function App() {
     hash: data?.hash,
     onSuccess() {
       refetchGetContacts();
+      setInputFields(initialState);
     },
   });
 

@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .delay_45 {
+    animation-delay: -0.45s;
+  }
+  .delay_30 {
+    animation-delay: -0.3s;
+  }
+  .delay_15 {
+    animation-delay: -0.15s;
+  }
+}
+
+@layer components {
+  .spinner {
+    @apply box-border block absolute w-4 h-4 border-2 border-solid border-t-[#F63333] border-x-transparent border-b-transparent rounded-[50%] animate-spinner;
+  }
+}

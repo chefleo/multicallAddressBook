@@ -59,6 +59,8 @@ const AddressContainer = ({
   address: string;
   refetchGetContacts: any;
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const { address: addressUser } = useAccount();
 
   const { data: name } = useContractRead({
@@ -89,6 +91,7 @@ const AddressContainer = ({
     },
     onError(error) {
       console.log("Error", error.message);
+      setLoading(false);
     },
   });
 
@@ -98,6 +101,9 @@ const AddressContainer = ({
     onSuccess(data) {
       console.log("Success write removeContact", data);
     },
+    onError() {
+      setLoading(false);
+    },
   });
 
   // Wagmi wait for the transaction to be processed
@@ -105,6 +111,7 @@ const AddressContainer = ({
     confirmations: 1,
     hash: data?.hash,
     onSuccess() {
+      setLoading(false);
       refetchGetContacts();
     },
   });
@@ -117,12 +124,26 @@ const AddressContainer = ({
             <h3 className="truncate text-sm font-medium text-gray-900">
               {typeof name === "string" ? name : ""}
             </h3>
-            <img
-              onClick={() => removeContact?.()}
-              className="h-3 w-3 cursor-pointer hover:transition hover:transform hover:scale-125 hover:ease-in"
-              src={X}
-              alt="X"
-            />
+            {loading ? (
+              <>
+                <div className="ml-2 h-5 w-5 inline-block relative">
+                  <div className="spinner"></div>
+                  <div className="spinner delay_45"></div>
+                  <div className="spinner delay_30"></div>
+                  <div className="spinner delay_15 "></div>
+                </div>
+              </>
+            ) : (
+              <img
+                onClick={() => {
+                  setLoading(true);
+                  removeContact?.();
+                }}
+                className="h-3 w-3 cursor-pointer hover:transition hover:transform hover:scale-125 hover:ease-in"
+                src={X}
+                alt="X"
+              />
+            )}
           </div>
           <AddressLine address={address} />
         </div>
