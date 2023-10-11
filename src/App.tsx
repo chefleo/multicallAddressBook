@@ -96,7 +96,7 @@ function App() {
   });
 
   // Wagmi Write Contract
-  const { data, write } = useContractWrite({
+  const { data, write: addContact } = useContractWrite({
     ...config,
     onSuccess(data) {
       console.log("Success write addContact", data);
@@ -124,7 +124,7 @@ function App() {
 
     if (values.length <= 1) {
       console.log("values", Object.values(values[0]));
-      write?.();
+      addContact?.();
     } else {
       const arrMulticall = values.map((obj) => Object.values(obj));
       console.log("values arrMulticall", arrMulticall);
@@ -163,7 +163,10 @@ function App() {
             </div>
           ) : null}
           {Array.isArray(addresses) ? (
-            <AddressesBook addresses={addresses} />
+            <AddressesBook
+              addresses={addresses}
+              refetchGetContacts={refetchGetContacts}
+            />
           ) : null}
         </div>
       </div>

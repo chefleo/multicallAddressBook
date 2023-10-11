@@ -1,27 +1,19 @@
 import React, { useState } from "react";
 import Clipboard from "/Clipboard.svg";
+import X from "/X.svg";
 
-import { useAccount, useContractRead } from "wagmi";
+import {
+  useAccount,
+  useContractRead,
+  usePrepareContractWrite,
+  useContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 
 import {
   address as AddressBookContract,
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
-
-// const people = [
-//   {
-//     name: "Jane Cooper",
-//     address: "0xed52E156aa52453f944505AA51117e2Eb82b0b09",
-//   },
-//   {
-//     name: "Jane Cooper",
-//     address: "0xed52E156aa52453f944505AA51117e2Eb82b0b09",
-//   },
-//   {
-//     name: "Jane Cooper",
-//     address: "0xed52E156aa52453f944505AA51117e2Eb82b0b09",
-//   },
-// ];
 
 const AddressLine = ({ address }: { address: string }) => {
   const [copied, setCopied] = useState(false);
@@ -60,7 +52,13 @@ const AddressLine = ({ address }: { address: string }) => {
   );
 };
 
-const AddressContainer = ({ address }: { address: string }) => {
+const AddressContainer = ({
+  address,
+  refetchGetContacts,
+}: {
+  address: string;
+  refetchGetContacts: any;
+}) => {
   const { address: addressUser } = useAccount();
 
   const { data: name } = useContractRead({
@@ -78,14 +76,53 @@ const AddressContainer = ({ address }: { address: string }) => {
     },
   });
 
+  // Wagmi Prepare Write Contract
+  const { config } = usePrepareContractWrite({
+    address: AddressBookContract as `0x${string}`,
+    abi: AbiAddressBook,
+    functionName: "removeContact",
+    args: [address],
+    enabled: address !== "",
+    cacheTime: 2_000,
+    onSuccess(data) {
+      console.log("Preparation Success removeContact", data);
+    },
+    onError(error) {
+      console.log("Error", error.message);
+    },
+  });
+
+  // Wagmi Write Contract
+  const { data, write: removeContact } = useContractWrite({
+    ...config,
+    onSuccess(data) {
+      console.log("Success write removeContact", data);
+    },
+  });
+
+  // Wagmi wait for the transaction to be processed
+  useWaitForTransaction({
+    confirmations: 1,
+    hash: data?.hash,
+    onSuccess() {
+      refetchGetContacts();
+    },
+  });
+
   return (
     <>
       <div className="flex w-full items-center justify-between space-x-6 p-6">
         <div className="flex-1 truncate">
-          <div className="flex items-center space-x-3">
+          <div className="flex justify-between items-center space-x-3">
             <h3 className="truncate text-sm font-medium text-gray-900">
               {typeof name === "string" ? name : ""}
             </h3>
+            <img
+              onClick={() => removeContact?.()}
+              className="h-3 w-3 cursor-pointer hover:transition hover:transform hover:scale-125 hover:ease-in"
+              src={X}
+              alt="X"
+            />
           </div>
           <AddressLine address={address} />
         </div>
@@ -94,7 +131,13 @@ const AddressContainer = ({ address }: { address: string }) => {
   );
 };
 
-const AddressesBook = ({ addresses }: { addresses: string[] }) => {
+const AddressesBook = ({
+  addresses,
+  refetchGetContacts,
+}: {
+  addresses: string[];
+  refetchGetContacts: any;
+}) => {
   return (
     <>
       <ul
@@ -107,7 +150,10 @@ const AddressesBook = ({ addresses }: { addresses: string[] }) => {
               key={index}
               className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
             >
-              <AddressContainer address={address} />
+              <AddressContainer
+                address={address}
+                refetchGetContacts={refetchGetContacts}
+              />
             </li>
           ))}
       </ul>
