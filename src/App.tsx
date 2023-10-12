@@ -30,6 +30,7 @@ function App() {
 
   const [activateConfigMulticall, setActivateConfigMulticall] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
@@ -107,6 +108,10 @@ function App() {
     onSuccess(data) {
       console.log("Success write addContact", data);
     },
+    onError() {
+      setLoading(false);
+      toast.error("Something went wrong.");
+    },
   });
 
   // Wagmi wait for the transaction to be processed
@@ -114,8 +119,10 @@ function App() {
     confirmations: 1,
     hash: data?.hash,
     onSuccess() {
+      console.log("Confimation addContact");
       refetchGetContacts();
       setInputFields(initialState);
+      setLoading(false);
     },
   });
 
@@ -152,13 +159,15 @@ function App() {
     ...configMulticall,
     onSuccess(data) {
       console.log("Success write multicall", data);
-      setIsReady(false);
-      setActivateConfigMulticall(false);
     },
     onError(err) {
       console.error("Error write multicall", err);
+      toast.error("Something went wrong.");
+    },
+    onSettled() {
       setIsReady(false);
       setActivateConfigMulticall(false);
+      setLoading(false);
     },
   });
 
@@ -166,21 +175,22 @@ function App() {
     confirmations: 1,
     hash: dataMulticall?.hash,
     onSuccess() {
+      console.log("Confimation multicall");
       refetchGetContacts();
       setInputFields(initialState);
       setPreparationMulticall([""]);
-      setIsReady(false);
-      setActivateConfigMulticall(false);
     },
   });
 
   const submit = () => {
+    setLoading(true);
     const values = [...inputFields];
 
     const isAnyFieldEmpty = inputFields.some(
       (field) => !field.address || !field.name
     );
     if (isAnyFieldEmpty) {
+      setLoading(false);
       return toast.error("Please fill out all address and name fields.");
     }
 
@@ -228,12 +238,25 @@ function App() {
           </div>
           {inputFields[0].address && inputFields[0].name ? (
             <div className="flex justify-center items-center mt-8">
-              <button
-                onClick={() => submit()}
-                className="bg-slate-800 text-white font-semibold w-1/2 px-3 py-4 rounded-xl hover:bg-slate-600"
-              >
-                Add Contact{inputFields.length > 1 ? "s" : ""}
-              </button>
+              {loading ? (
+                <>
+                  <div className="flex justify-center items-center bg-slate-800 text-white font-semibold w-1/2 px-3 py-4 rounded-xl">
+                    <div className="h-5 w-5 inline-block relative pt-0.5">
+                      <div className="spinner border-t-white"></div>
+                      <div className="spinner delay_45 border-t-white"></div>
+                      <div className="spinner delay_30 border-t-white"></div>
+                      <div className="spinner delay_15 border-t-white "></div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <button
+                  onClick={() => submit()}
+                  className="bg-slate-800 text-white font-semibold w-1/2 px-3 py-4 rounded-xl hover:bg-slate-600"
+                >
+                  Add Contact{inputFields.length > 1 ? "s" : ""}
+                </button>
+              )}
             </div>
           ) : null}
           {Array.isArray(addresses) ? (

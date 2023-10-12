@@ -111,6 +111,7 @@ const AddressContainer = ({
     confirmations: 1,
     hash: data?.hash,
     onSuccess() {
+      console.log("Confimation removeContact");
       setLoading(false);
       refetchGetContacts();
     },
@@ -127,10 +128,10 @@ const AddressContainer = ({
             {loading ? (
               <>
                 <div className="ml-2 h-5 w-5 inline-block relative">
-                  <div className="spinner"></div>
-                  <div className="spinner delay_45"></div>
-                  <div className="spinner delay_30"></div>
-                  <div className="spinner delay_15 "></div>
+                  <div className="spinner border-t-[#F63333]"></div>
+                  <div className="spinner delay_45 border-t-[#F63333]"></div>
+                  <div className="spinner delay_30 border-t-[#F63333]"></div>
+                  <div className="spinner delay_15 border-t-[#F63333] "></div>
                 </div>
               </>
             ) : (
