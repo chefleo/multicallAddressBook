@@ -13,6 +13,7 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+import { encodeFunctionData } from "viem";
 
 import {
   address as AddressBookContract,
@@ -25,6 +26,10 @@ import AddressesBook from "../components/AddressesBook";
 function App() {
   const initialState = [{ address: "", name: "" }];
   const [inputFields, setInputFields] = useState(initialState);
+  const [preparationMulticall, setPreparationMulticall] = useState([""]);
+
+  const [activateConfigMulticall, setActivateConfigMulticall] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
@@ -114,6 +119,61 @@ function App() {
     },
   });
 
+  // Wagmi prepare write MULTICALL
+  //
+  const { config: configMulticall } = usePrepareContractWrite({
+    address: AddressBookContract as `0x${string}`,
+    abi: AbiAddressBook,
+    functionName: "multicall",
+    args: [preparationMulticall],
+    enabled: activateConfigMulticall,
+    cacheTime: 2_000,
+    onSuccess(data) {
+      console.log("Preparation Success multicall", data);
+      setIsReady(true);
+    },
+    onError(error) {
+      console.log("Error", error.message);
+      setIsReady(false);
+      setActivateConfigMulticall(false);
+    },
+  });
+
+  // When the state variable isReady become true (inside onSuccess of usePrepareContractWrite of MULTICALL)
+  // the write fn multicall is called
+  useEffect(() => {
+    if (isReady) {
+      multicall?.();
+    }
+  }, [isReady]);
+
+  // Wagmi write MULTICALL
+  const { data: dataMulticall, write: multicall } = useContractWrite({
+    ...configMulticall,
+    onSuccess(data) {
+      console.log("Success write multicall", data);
+      setIsReady(false);
+      setActivateConfigMulticall(false);
+    },
+    onError(err) {
+      console.error("Error write multicall", err);
+      setIsReady(false);
+      setActivateConfigMulticall(false);
+    },
+  });
+
+  useWaitForTransaction({
+    confirmations: 1,
+    hash: dataMulticall?.hash,
+    onSuccess() {
+      refetchGetContacts();
+      setInputFields(initialState);
+      setPreparationMulticall([""]);
+      setIsReady(false);
+      setActivateConfigMulticall(false);
+    },
+  });
+
   const submit = () => {
     const values = [...inputFields];
 
@@ -125,11 +185,23 @@ function App() {
     }
 
     if (values.length <= 1) {
-      console.log("values", Object.values(values[0]));
       addContact?.();
     } else {
       const arrMulticall = values.map((obj) => Object.values(obj));
-      console.log("values arrMulticall", arrMulticall);
+
+      const argsBytes = arrMulticall.map((arr) => {
+        const address = arr[0];
+        const name = arr[1];
+        return encodeFunctionData({
+          abi: AbiAddressBook,
+          functionName: "addContact",
+          args: [address, name],
+        });
+      });
+      setActivateConfigMulticall(true);
+      setPreparationMulticall(argsBytes);
+
+      // After that check above the "Wagmi write MULTICALL"
     }
   };
 

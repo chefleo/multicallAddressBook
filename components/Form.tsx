@@ -108,6 +108,3 @@ export const Form = ({
     </>
   );
 };
-
-//      <div className="flex ml-auto px-6 sm:px-0 w-full sm:w-2/3 pt-8 gap-x-5">
-//      <div className="flex justify-center items-center mt-8">
