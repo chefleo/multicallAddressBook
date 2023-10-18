@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Toaster, toast } from "sonner";
 
@@ -41,22 +41,30 @@ function App() {
     if (chain?.id !== 84531 && chain?.name !== "Base Goerli") {
       switchNetwork?.(84531);
     }
+
+    return () => {
+      // Cleanup function to prevent memory leaks
+      // Unsubscribe or clean up any resources here
+    };
   }, [chain, switchNetwork]);
 
-  const handleInputChange = (index: number, event: any) => {
-    const values = [...inputFields];
-    const key: string = event.target.name;
-    const value: string = event.target.value;
+  const handleInputChange = useCallback(
+    (index: number, event: any) => {
+      const values = [...inputFields];
+      const key: string = event.target.name;
+      const value: string = event.target.value;
 
-    if (key === "address" || key === "name") {
-      // console.log("values[index][event.target.name]", values[index][key]);
-      values[index][key] = value;
-    } else {
-      console.error("key is not correct", key);
-    }
+      if (key === "address" || key === "name") {
+        // console.log("values[index][event.target.name]", values[index][key]);
+        values[index][key] = value;
+      } else {
+        console.error("key is not correct", key);
+      }
 
-    setInputFields(values);
-  };
+      setInputFields(values);
+    },
+    [inputFields, setInputFields]
+  );
 
   const handleAddFields = () => {
     setInputFields([...inputFields, { address: "", name: "" }]);
@@ -127,7 +135,6 @@ function App() {
   });
 
   // Wagmi prepare write MULTICALL
-  //
   const { config: configMulticall } = usePrepareContractWrite({
     address: AddressBookContract as `0x${string}`,
     abi: AbiAddressBook,

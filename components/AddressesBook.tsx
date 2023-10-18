@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Clipboard from "/Clipboard.svg";
 import X from "/X.svg";
 
@@ -15,17 +15,17 @@ import {
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
 
-const AddressLine = ({ address }: { address: string }) => {
+export const AddressLine = ({ address }: { address: string }) => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = (address: string) => {
+  const handleCopy = useCallback((address: string) => {
     navigator.clipboard.writeText(address ? address : "");
     setCopied(true);
 
     setTimeout(() => {
       setCopied(false);
     }, 1000);
-  };
+  }, []);
 
   return (
     <>
@@ -33,26 +33,26 @@ const AddressLine = ({ address }: { address: string }) => {
         <p className="mt-1 truncate text-sm text-gray-500">
           {`${address.slice(0, 8)}...${address.slice(-8)}`}
         </p>
-        {copied ? (
+        {address && (
           <>
-            <p className="pl-3 text-gray-500 font-medium text-sm">Copied</p>
+            {copied ? (
+              <p className="pl-3 text-gray-500 font-medium text-sm">Copied</p>
+            ) : (
+              <img
+                onClick={() => handleCopy(address)}
+                className="ml-3 h-4 w-4 cursor-pointer stroke-red-600"
+                src={Clipboard}
+                alt="Clipboard"
+              />
+            )}
           </>
-        ) : (
-          address && (
-            <img
-              onClick={() => handleCopy(address)}
-              className="ml-3 h-4 w-4 cursor-pointer stroke-red-600"
-              src={Clipboard}
-              alt="Clipboard"
-            />
-          )
         )}
       </div>
     </>
   );
 };
 
-const AddressContainer = ({
+export const AddressContainer = ({
   address,
   refetchGetContacts,
 }: {
