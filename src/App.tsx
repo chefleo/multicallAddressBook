@@ -6,12 +6,12 @@ import { Toaster, toast } from "sonner";
 import Saga from "/saga.svg";
 
 import { createWalletClient, http, publicActions } from "viem";
-import { parseUnits, parseGwei, parseEther } from "viem";
+// import { parseUnits, parseGwei, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import {
   useAccount,
-  useBalance,
+  // useBalance,
   useNetwork,
   useSwitchNetwork,
   useContractRead,
@@ -35,9 +35,9 @@ import { Form } from "../components/Form";
 import AddressesBook from "../components/AddressesBook";
 
 const Faucet = () => {
-  const { data } = useBalance({
-    address: AddressFaucet as `0x${string}`,
-  });
+  // const { data } = useBalance({
+  //   address: AddressFaucet as `0x${string}`,
+  // });
   const { chains } = useSwitchNetwork();
 
   const account = privateKeyToAccount(import.meta.env.VITE_PRIVATE_KEY);

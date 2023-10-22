@@ -8,7 +8,7 @@ import { walletConnectProvider } from "@web3modal/wagmi";
 
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
-import { baseGoerli } from "wagmi/chains";
+// import { baseGoerli } from "wagmi/chains";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
