@@ -13,6 +13,31 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
+import { Chain } from "wagmi";
+
+export const tutorialsworld = {
+  id: 1697743716680744,
+  name: "tutorialsworld",
+  network: "Tutorials World",
+  nativeCurrency: {
+    decimals: 18,
+    name: "tutorials",
+    symbol: "tutorials",
+  },
+  rpcUrls: {
+    public: {
+      http: [
+        "https://tutorialsworld-1697743716680744-1.jsonrpc.sp1.sagarpc.io",
+      ],
+    },
+    default: {
+      http: [
+        "https://tutorialsworld-1697743716680744-1.jsonrpc.sp1.sagarpc.io",
+      ],
+    },
+  },
+} as const satisfies Chain;
+
 // 1. Get projectId
 if (!import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID) {
   throw new Error("You need to provide WALLET_CONNECT_PROJECT_ID env variable");
@@ -21,7 +46,7 @@ const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
 // 2. Create wagmiConfig
 const { chains, publicClient } = configureChains(
-  [baseGoerli],
+  [tutorialsworld],
   [walletConnectProvider({ projectId }), publicProvider()]
 );
 

@@ -3,9 +3,15 @@ import "./App.css";
 import { useCallback, useEffect, useState } from "react";
 
 import { Toaster, toast } from "sonner";
+import Saga from "/saga.svg";
+
+import { createWalletClient, http, publicActions } from "viem";
+import { parseUnits, parseGwei, parseEther } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 
 import {
   useAccount,
+  useBalance,
   useNetwork,
   useSwitchNetwork,
   useContractRead,
@@ -20,8 +26,53 @@ import {
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
 
+import {
+  address as AddressFaucet,
+  abi as AbiFaucet,
+} from "../contract/faucetSaga.json";
+
 import { Form } from "../components/Form";
 import AddressesBook from "../components/AddressesBook";
+
+const Faucet = () => {
+  const { data } = useBalance({
+    address: AddressFaucet as `0x${string}`,
+  });
+  const { chains } = useSwitchNetwork();
+
+  const account = privateKeyToAccount(import.meta.env.VITE_PRIVATE_KEY);
+
+  const client = createWalletClient({
+    account,
+    chain: chains[0],
+    transport: http(),
+  }).extend(publicActions);
+
+  const faucet = async () => {
+    // Equivalent of usePrepareContractWrite
+    const { request } = await client.simulateContract({
+      address: AddressFaucet as `0x${string}`,
+      abi: AbiFaucet,
+      functionName: "requestTokens",
+      args: ["0x03305A2C9d2030841576F7480D7E2eE45599f7D1"],
+    });
+
+    // Equivalent of useContractWrite
+    const hash = await client.writeContract(request);
+    console.log("Transaction successfull:", hash);
+  };
+
+  return (
+    <div className="w-full flex justify-center items-center">
+      <button
+        onClick={() => faucet?.()}
+        className="mt-10 h-20 w-48 rounded-xl bg-blue-500 cursor-pointer text-xl text-white font-semibold hover:scale-110  transition ease-in"
+      >
+        Faucet
+      </button>
+    </div>
+  );
+};
 
 function App() {
   const initialState = [{ address: "", name: "" }];
@@ -35,11 +86,11 @@ function App() {
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
+  const { chains, switchNetwork } = useSwitchNetwork();
 
   useEffect(() => {
-    if (chain?.id !== 84531 && chain?.name !== "Base Goerli") {
-      switchNetwork?.(84531);
+    if (chain?.id !== chains[0].id) {
+      switchNetwork?.(chains[0].id);
     }
 
     return () => {
@@ -226,7 +277,8 @@ function App() {
     <>
       <div className="bg-gray-100 min-h-screen">
         <Toaster position="top-center" richColors />
-        <div className="flex justify-end items-center h-20 bg-slate-800 px-8">
+        <div className="flex justify-between items-center h-20 bg-slate-800 px-20">
+          <img className="h-10 w-10" src={Saga} alt="Saga" />
           <w3m-button balance="hide" />
         </div>
         <div className="mt-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -272,6 +324,7 @@ function App() {
               refetchGetContacts={refetchGetContacts}
             />
           ) : null}
+          <Faucet />
         </div>
       </div>
     </>
