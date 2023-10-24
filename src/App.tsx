@@ -34,6 +34,8 @@ import {
 import { Form } from "../components/Form";
 import AddressesBook from "../components/AddressesBook";
 
+import { tutorialsworld } from "./main";
+
 const Faucet = () => {
   // const { data } = useBalance({
   //   address: AddressFaucet as `0x${string}`,
@@ -44,7 +46,7 @@ const Faucet = () => {
 
   const client = createWalletClient({
     account,
-    chain: chains[0],
+    chain: tutorialsworld,
     transport: http(),
   }).extend(publicActions);
 
@@ -89,8 +91,8 @@ function App() {
   const { chains, switchNetwork } = useSwitchNetwork();
 
   useEffect(() => {
-    if (chain?.id !== chains[0].id) {
-      switchNetwork?.(chains[0].id);
+    if (chain?.id !== 1697743716680744) {
+      switchNetwork?.(1697743716680744);
     }
 
     return () => {
