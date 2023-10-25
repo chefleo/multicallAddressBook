@@ -16,6 +16,6 @@
 
 @layer components {
   .spinner {
-    @apply box-border block absolute w-4 h-4 border-2 border-solid border-x-transparent border-b-transparent rounded-[50%] animate-spinner;
+    @apply box-border block absolute border-2 border-solid border-x-transparent border-b-transparent rounded-[50%] animate-spinner;
   }
 }

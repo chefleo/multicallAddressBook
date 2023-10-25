@@ -13,7 +13,10 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import { Chain } from "wagmi";
+import Faucet from "../components/Faucet.tsx";
 
 export const tutorialsworld = {
   id: 1697743716680744,
@@ -79,15 +82,20 @@ createWeb3Modal({
   projectId,
   chains,
   themeVariables: {
-    "--w3m-color-mix": "#ff3333",
-    "--w3m-accent": "#ff3333",
+    "--w3m-color-mix": "#1f4287",
+    "--w3m-accent": "#1f4287",
   },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
-      <App />
+      <Router>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/faucet" element={<Faucet />} />
+        </Routes>
+      </Router>
     </WagmiConfig>
   </React.StrictMode>
 );

@@ -127,11 +127,11 @@ export const AddressContainer = ({
             </h3>
             {loading ? (
               <>
-                <div className="ml-2 h-5 w-5 inline-block relative">
-                  <div className="spinner border-t-[#F63333]"></div>
-                  <div className="spinner delay_45 border-t-[#F63333]"></div>
-                  <div className="spinner delay_30 border-t-[#F63333]"></div>
-                  <div className="spinner delay_15 border-t-[#F63333] "></div>
+                <div className="ml-2 h-6 w-6 inline-block relative">
+                  <div className="spinner h-4 w-4 border-t-[#F63333]"></div>
+                  <div className="spinner h-4 w-4 delay_45 border-t-[#F63333]"></div>
+                  <div className="spinner h-4 w-4 delay_30 border-t-[#F63333]"></div>
+                  <div className="spinner h-4 w-4 delay_15 border-t-[#F63333] "></div>
                 </div>
               </>
             ) : (
