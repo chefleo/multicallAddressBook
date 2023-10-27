@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Faucet from "../components/Faucet.tsx";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -13,10 +15,7 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import { Chain } from "wagmi";
-import Faucet from "../components/Faucet.tsx";
 
 export const tutorialsworld = {
   id: 1697743716680744,
@@ -53,24 +52,23 @@ const { chains, publicClient } = configureChains(
   [walletConnectProvider({ projectId }), publicProvider()]
 );
 
-const metadata = {
-  name: "Web3Modal",
-  description: "Web3Modal Example",
-  url: "https://web3modal.com",
-  icons: ["https://avatars.githubusercontent.com/u/37784886"],
-};
-
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
     new WalletConnectConnector({
       chains,
-      options: { projectId, showQrModal: false, metadata },
+      options: {
+        projectId,
+        showQrModal: false,
+        metadata: {
+          name: "Multicall Saga",
+        },
+      },
     }),
     new InjectedConnector({ chains, options: { shimDisconnect: true } }),
     new CoinbaseWalletConnector({
       chains,
-      options: { appName: metadata.name },
+      options: { appName: "Multicall Saga" },
     }),
   ],
   publicClient,
