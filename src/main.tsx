@@ -4,13 +4,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Faucet from "../components/Faucet.tsx";
 import App from "./App.tsx";
 import "./index.css";
+// import { baseGoerli } from "wagmi/chains";
 
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { walletConnectProvider } from "@web3modal/wagmi";
 
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
-// import { baseGoerli } from "wagmi/chains";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
@@ -18,23 +18,23 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { Chain } from "wagmi";
 
 export const tutorialsworld = {
-  id: 1697743716680744,
+  id: 1699000173917438,
   name: "tutorialsworld",
   network: "Tutorials World",
   nativeCurrency: {
     decimals: 18,
-    name: "tutorials",
-    symbol: "tutorials",
+    name: "tworld",
+    symbol: "tworld",
   },
   rpcUrls: {
     public: {
       http: [
-        "https://tutorialsworld-1697743716680744-1.jsonrpc.sp1.sagarpc.io",
+        "https://tutorialsworld-1699000173917438-1.jsonrpc.testnet-sp1.sagarpc.io",
       ],
     },
     default: {
       http: [
-        "https://tutorialsworld-1697743716680744-1.jsonrpc.sp1.sagarpc.io",
+        "https://tutorialsworld-1699000173917438-1.jsonrpc.testnet-sp1.sagarpc.io",
       ],
     },
   },

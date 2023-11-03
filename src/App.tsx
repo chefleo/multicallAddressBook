@@ -139,7 +139,7 @@ function App() {
           label: "See hash tx",
           onClick: () =>
             parent.open(
-              `https://tutorialsworld-1697743716680744-1.sp1.sagaexplorer.io/tx/${data?.hash}`
+              `https://tutorialsworld-1699000173917438-1.testnet-sp1.sagaexplorer.io/tx/${data?.hash}`
             ),
         },
       });
@@ -204,7 +204,7 @@ function App() {
           label: "See hash tx",
           onClick: () =>
             parent.open(
-              `https://tutorialsworld-1697743716680744-1.sp1.sagaexplorer.io/tx/${dataMulticall?.hash}`
+              `https://tutorialsworld-1699000173917438-1.testnet-sp1.sagaexplorer.io/tx/${dataMulticall?.hash}`
             ),
         },
       });
