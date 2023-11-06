@@ -3,23 +3,22 @@ dotEnvConfig();
 
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox-viem";
+import "@nomicfoundation/hardhat-verify";
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const API_KEY = process.env.API_KEY;
 
 const config: HardhatUserConfig = {
   solidity: "0.8.21",
   networks: {
-    "base-goerli": {
-      url: "https://goerli.base.org",
+    tutorialsworld: {
+      chainId: 1699000173917438,
+      url: "https://tutorialsworld-1699000173917438-1.jsonrpc.testnet-sp1.sagarpc.io",
       accounts: [PRIVATE_KEY as string],
       gasPrice: 1000000000,
     },
   },
-  etherscan: {
-    apiKey: {
-      baseGoerli: API_KEY as string,
-    },
+  sourcify: {
+    enabled: true,
   },
 };
 
