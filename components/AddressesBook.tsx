@@ -86,6 +86,7 @@ export const AddressContainer = ({
     args: [address],
     enabled: address !== "",
     cacheTime: 2_000,
+    chainId: 1697743716680744,
     onSuccess(data) {
       console.log("Preparation Success removeContact", data);
     },

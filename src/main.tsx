@@ -38,6 +38,12 @@ export const tutorialsworld = {
       ],
     },
   },
+  blockExplorers: {
+    default: {
+      name: "Tutorials World Explorer",
+      url: "https://tutorialsworld-1699000173917438-1.testnet-sp1.sagaexplorer.io",
+    },
+  },
 } as const satisfies Chain;
 
 // 1. Get projectId

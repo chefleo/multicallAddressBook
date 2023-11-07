@@ -26,6 +26,10 @@ import AddressesBook from "../components/AddressesBook";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 
+import { createWalletClient, custom } from "viem";
+
+import { tutorialsworld } from "./main";
+
 function App() {
   const initialState = [{ address: "", name: "" }];
   const [inputFields, setInputFields] = useState(initialState);
@@ -38,18 +42,23 @@ function App() {
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { chains, switchNetwork } = useSwitchNetwork();
 
   useEffect(() => {
-    if (chain?.id !== 1697743716680744) {
-      switchNetwork?.(1697743716680744);
+    if (chain?.id !== 1697743716680744 && isConnected) {
+      console.log("test");
+      const client = createWalletClient({
+        account: address,
+        // @ts-ignore
+        transport: custom(window.ethereum),
+      });
+      client.addChain({ chain: tutorialsworld });
     }
 
     return () => {
       // Cleanup function to prevent memory leaks
       // Unsubscribe or clean up any resources here
     };
-  }, [chain, switchNetwork]);
+  }, [isConnected]);
 
   const handleInputChange = useCallback(
     (index: number, event: any) => {
@@ -105,6 +114,7 @@ function App() {
     args: [inputFields[0].address, inputFields[0].name],
     enabled: inputFields[0].address !== "" && inputFields[0].name !== "",
     cacheTime: 2_000,
+    chainId: 1697743716680744,
     onSuccess(data) {
       console.log("Preparation Success addContact", data);
     },
@@ -154,6 +164,7 @@ function App() {
     args: [preparationMulticall],
     enabled: activateConfigMulticall,
     cacheTime: 2_000,
+    chainId: 1697743716680744,
     onSuccess(data) {
       console.log("Preparation Success multicall", data);
       setIsReady(true);
