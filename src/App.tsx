@@ -46,10 +46,10 @@ function App() {
   useEffect(() => {
     const switchToOwnChain = async (client: any) => {
       await client.addChain({ chain: tutorialsworld });
-      await client.switchChain({ id: 1697743716680744 });
+      await client.switchChain({ id: 1699000173917438 });
     };
 
-    if (chain?.id !== 1697743716680744 && isConnected) {
+    if (chain?.id !== 1699000173917438 && isConnected) {
       const client = createWalletClient({
         account: address,
         // @ts-ignore
@@ -118,7 +118,7 @@ function App() {
     args: [inputFields[0].address, inputFields[0].name],
     enabled: inputFields[0].address !== "" && inputFields[0].name !== "",
     cacheTime: 2_000,
-    chainId: 1697743716680744,
+    chainId: 1699000173917438,
     onSuccess(data) {
       console.log("Preparation Success addContact", data);
     },
@@ -168,7 +168,7 @@ function App() {
     args: [preparationMulticall],
     enabled: activateConfigMulticall,
     cacheTime: 2_000,
-    chainId: 1697743716680744,
+    chainId: 1699000173917438,
     onSuccess(data) {
       console.log("Preparation Success multicall", data);
       setIsReady(true);
