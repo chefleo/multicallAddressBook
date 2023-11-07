@@ -44,14 +44,18 @@ function App() {
   const { chain } = useNetwork();
 
   useEffect(() => {
+    const switchToOwnChain = async (client: any) => {
+      await client.addChain({ chain: tutorialsworld });
+      await client.switchChain({ id: 1697743716680744 });
+    };
+
     if (chain?.id !== 1697743716680744 && isConnected) {
       const client = createWalletClient({
         account: address,
         // @ts-ignore
         transport: custom(window.ethereum),
       });
-      client.addChain({ chain: tutorialsworld });
-      client.switchChain({ id: 1697743716680744 });
+      switchToOwnChain(client);
     }
 
     return () => {
