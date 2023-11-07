@@ -52,6 +52,7 @@ function App() {
         transport: custom(window.ethereum),
       });
       client.addChain({ chain: tutorialsworld });
+      client.switchChain({ id: 1697743716680744 });
     }
 
     return () => {
