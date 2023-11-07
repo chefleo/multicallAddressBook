@@ -45,7 +45,6 @@ function App() {
 
   useEffect(() => {
     if (chain?.id !== 1697743716680744 && isConnected) {
-      console.log("test");
       const client = createWalletClient({
         account: address,
         // @ts-ignore
@@ -59,7 +58,7 @@ function App() {
       // Cleanup function to prevent memory leaks
       // Unsubscribe or clean up any resources here
     };
-  }, [isConnected]);
+  }, [isConnected, chain]);
 
   const handleInputChange = useCallback(
     (index: number, event: any) => {

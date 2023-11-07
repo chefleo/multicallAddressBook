@@ -22,7 +22,7 @@ function Header() {
         ) : (
           <Link to={`/`}>
             {" "}
-            <button className="text-white font-medium text-sm sm:text-lg ml-5 sm:ml-10 mr-10 px-4 py-2 rounded-2xl bg-[#1f4287] hover:scale-110 transition ease-in">
+            <button className="text-white w-24 sm:w-48 font-medium text-xs sm:text-lg ml-5 sm:ml-10 mr-10 px-4 py-2 rounded-2xl bg-[#1f4287] hover:scale-110 transition ease-in">
               Return to Multicall
             </button>{" "}
           </Link>
