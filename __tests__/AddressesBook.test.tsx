@@ -66,6 +66,12 @@ describe.only("AddressContainer", () => {
   });
 });
 
+// TODO
+// Deploy with in anvil chain id (31337) and get contract address
+// Create App.test.tsx
+// Import everything such as all wagmi read and write and abi
+// Test using Viem simulate contract and write contract
+
 // // Clicking the clipboard icon copies the address to the clipboard
 // it("should copy the address to the clipboard when clicking the clipboard icon", async () => {
 //   const address = "0x1234567890abcdef";
