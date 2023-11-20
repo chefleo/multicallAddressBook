@@ -94,6 +94,8 @@ function App() {
     },
   });
 
+  // console.log("address", address);
+
   // Wagmi Prepare Write Contract
   const { config } = usePrepareContractWrite({
     address: AddressBookContract as `0x${string}`,

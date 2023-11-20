@@ -3,7 +3,8 @@
 // https://cryptomarketpool.com/address-book
 
 pragma solidity ^0.8.20;
-import "@openzeppelin/contracts/utils/Multicall.sol";
+import "openzeppelin-contracts/contracts/utils/Multicall.sol";
+
 
 contract AddressBook is Multicall {
     mapping(address => address[]) private contacts;
