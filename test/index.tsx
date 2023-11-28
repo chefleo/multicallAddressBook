@@ -10,6 +10,8 @@ import { baseGoerli } from "wagmi/chains";
 import { MockConnector } from "wagmi/connectors/mock";
 import { publicProvider } from "wagmi/providers/public";
 
+import { Hex } from "viem";
+
 const defaultChains = [baseGoerli];
 
 export function renderWithProviders(
@@ -24,11 +26,11 @@ export function renderWithProviders(
   const firstChain = supportedChains[0];
 
   const account = privateKeyToAccount(
-    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" as `0x${string}`
+    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" as Hex
   ); // first anvil pk
 
   const client = createWalletClient({
-    account,
+    account: account.address,
     chain: firstChain,
     transport: http(),
   });

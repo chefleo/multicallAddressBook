@@ -21,7 +21,7 @@
     "react-dom": "^18.2.0",
     "sonner": "^1.0.3",
     "viem": "^1.15.4",
-    "vitest": "^0.34.6",
+    "vitest": "0.31.1",
     "wagmi": "^1.4.3"
   },
   "devDependencies": {

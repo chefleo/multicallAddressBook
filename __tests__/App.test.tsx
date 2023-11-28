@@ -41,6 +41,21 @@ import {
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
 
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [baseGoerli],
+  [publicProvider()]
+);
+
+const config = createConfig({
+  autoConnect: true,
+  publicClient,
+  webSocketPublicClient,
+});
+
+const Wagmi = ({ children }: { children: React.ReactNode }) => {
+  return <WagmiConfig config={config}>{children}</WagmiConfig>;
+};
+
 describe("AddressContainer", () => {
   // Displays list of addresses from contract
   // it("should render input fields and submit button", () => {
@@ -60,27 +75,30 @@ describe("AddressContainer", () => {
 
   it("Test wagmi hook", async () => {
     // Arrange
-    const test = renderWithProviders(<App />);
+    // const render = renderWithProviders(<App />);
 
-    console.log("test", test);
+    // console.log("test", test);
 
-    const { result } = renderHook(() =>
-      useContractRead({
-        address: AddressBookContract as `0x${string}`,
-        abi: AbiAddressBook,
-        functionName: "getContacts",
-        account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
-        chainId: baseGoerli.id,
-        onError(data) {
-          console.log("Error Test", data);
-        },
-      })
+    const { result } = renderHook(
+      () =>
+        useContractRead({
+          address: AddressBookContract as `0x${string}`,
+          abi: AbiAddressBook,
+          functionName: "getContacts",
+          account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
+          chainId: baseGoerli.id,
+          onError(data) {
+            console.log("Error Test", data);
+          },
+        }),
+      { wrapper: Wagmi }
     );
 
-    console.log("config", result);
+    // console.log("config", result);
 
-    // await waitFor(() => expect(result.current.isSuccess).toBeTruthy());
+    await waitFor(() => expect(result.current.isSuccess).toBeTruthy());
     const { internal: _, ...res } = result.current;
-    console.log("res.data", res.data);
+    // console.log("res.data", res.data);
+    expect(res.data).not.empty;
   });
 });
