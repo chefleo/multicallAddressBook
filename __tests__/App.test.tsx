@@ -13,16 +13,6 @@ import "@testing-library/jest-dom";
 // App component
 import App from "../src/App";
 
-// Wagmi Config
-import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { MockConnector } from "@wagmi/core/connectors/mock";
-import { publicProvider } from "wagmi/providers/public";
-
-import { createWalletClient, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { foundry } from "viem/chains";
-import { baseGoerli } from "wagmi/chains";
-
 import {
   useAccount,
   useNetwork,
@@ -36,25 +26,13 @@ import { encodeFunctionData } from "viem";
 
 import { renderWithProviders } from "../test";
 
+import { WagmiWrapper } from "../test/wrapper";
+import { baseGoerli } from "wagmi/chains";
+
 import {
   address as AddressBookContract,
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
-
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [baseGoerli],
-  [publicProvider()]
-);
-
-const config = createConfig({
-  autoConnect: true,
-  publicClient,
-  webSocketPublicClient,
-});
-
-const Wagmi = ({ children }: { children: React.ReactNode }) => {
-  return <WagmiConfig config={config}>{children}</WagmiConfig>;
-};
 
 describe("AddressContainer", () => {
   // Displays list of addresses from contract
@@ -74,10 +52,7 @@ describe("AddressContainer", () => {
   // });
 
   it("Test wagmi hook", async () => {
-    // Arrange
     // const render = renderWithProviders(<App />);
-
-    // console.log("test", test);
 
     const { result } = renderHook(
       () =>
@@ -91,14 +66,12 @@ describe("AddressContainer", () => {
             console.log("Error Test", data);
           },
         }),
-      { wrapper: Wagmi }
+      { wrapper: WagmiWrapper }
     );
-
-    // console.log("config", result);
 
     await waitFor(() => expect(result.current.isSuccess).toBeTruthy());
     const { internal: _, ...res } = result.current;
-    // console.log("res.data", res.data);
+
     expect(res.data).not.empty;
   });
 });
