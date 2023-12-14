@@ -13,6 +13,7 @@ import "@testing-library/jest-dom";
 
 // App component
 import App from "../src/App";
+import { Form } from "../components/Form";
 
 import {
   useAccount,
@@ -53,6 +54,72 @@ describe("AddressContainer", () => {
   //   expect(submitButton).toBeInTheDocument();
   // });
 
+  it("should render two input fields for address and name", () => {
+    render(
+      <Form
+        index={0}
+        isLast={false}
+        inputField={{ address: "", name: "" }}
+        handleAddFields={() => {}}
+        handleInputChange={() => {}}
+        handleRemoveFields={() => {}}
+      />,
+      { wrapper: WagmiWrapperMockConnector }
+    );
+    expect(screen.getAllByRole("textbox")).toHaveLength(2);
+  });
+
+  it("should have correct labels for input fields", () => {
+    render(
+      <Form
+        index={0}
+        isLast={false}
+        inputField={{ address: "", name: "" }}
+        handleAddFields={() => {}}
+        handleInputChange={() => {}}
+        handleRemoveFields={() => {}}
+      />,
+      { wrapper: WagmiWrapperMockConnector }
+    );
+    expect(screen.getByText("Address")).toBeInTheDocument();
+    expect(screen.getByText("Name")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Add an ETH address")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Add an name / alias name")
+    ).toBeInTheDocument();
+  });
+
+  it("should have correct change input ", () => {
+    render(<App />, { wrapper: WagmiWrapperMockConnector });
+
+    expect(
+      screen.getByPlaceholderText("Add an ETH address")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Add an name / alias name")
+    ).toBeInTheDocument();
+
+    const addressInput = screen.getByPlaceholderText("Add an ETH address");
+    const nameInput = screen.getByPlaceholderText("Add an name / alias name");
+
+    fireEvent.change(addressInput, {
+      target: { value: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+    });
+    fireEvent.change(nameInput, { target: { value: "Test input 2" } });
+
+    // console.log("addressInput", addressInput.value);
+    // console.log("nameInput", nameInput.value);
+
+    // @ts-ignore
+    expect(addressInput.value).toBe(
+      "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+    );
+    // @ts-ignore
+    expect(nameInput.value).toBe("Test input 2");
+  });
+
   it("(useContractRead) getContacts should be NOT empty with address 0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0", async () => {
     // const render = renderWithProviders(<App />);
 
@@ -80,7 +147,7 @@ describe("AddressContainer", () => {
     await waitFor(() => expect(result.current.isSuccess).toBeTruthy());
     const { internal: _, ...res } = result.current;
 
-    console.log("res.data", res.data);
+    // console.log("res.data", res.data);
 
     expect(res.data).not.empty;
 
@@ -125,7 +192,122 @@ describe("AddressContainer", () => {
     expect(res.data).toBe("Test");
   });
 
-  it("Test usePrepareContractWrite", async () => {
+  it("useAccount give me my address", async () => {
+    const { result: address } = renderHook(() => useAccount(), {
+      wrapper: WagmiWrapperMockConnector,
+    });
+
+    await waitFor(() => expect(address.current.isConnected).toBeTruthy());
+
+    // console.log("address", address.current.address);
+    expect(address.current.address).toBe(
+      "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0"
+    );
+  });
+
+  it("addContact config usePrepareContractWrite should work", async () => {
+    const { result: config } = renderHook(
+      () =>
+        usePrepareContractWrite({
+          address: AddressBookContract as `0x${string}`,
+          abi: AbiAddressBook,
+          functionName: "addContact",
+          chainId: baseGoerli.id,
+          args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "Unit test"],
+          account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
+          onError(err: any) {
+            console.log(err);
+          },
+        }),
+      { wrapper: WagmiWrapperMockConnector }
+    );
+
+    await waitFor(() => expect(config.current.isSuccess).toBeTruthy());
+    const configObj = config.current.config.request;
+
+    console.log("result.current.config.request", configObj);
+
+    expect(configObj.abi).not.empty;
+
+    expect(configObj.functionName).toBe("addContact");
+  });
+
+  it.only("addContact write call should work", async () => {
+    const { result: address } = renderHook(() => useAccount(), {
+      wrapper: WagmiWrapperMockConnector,
+    });
+
+    await waitFor(() => expect(address.current.isConnected).toBeTruthy());
+
+    const { result: config } = renderHook(
+      () =>
+        usePrepareContractWrite({
+          address: AddressBookContract as `0x${string}`,
+          abi: AbiAddressBook,
+          functionName: "addContact",
+          chainId: baseGoerli.id,
+          args: ["0x04B133Ef7561d795A52110670E54d673eD7EB17F", "Unit test"],
+          // account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
+          onSuccess(data: any) {
+            console.log("usePrepareContractWrite Success", data);
+          },
+          onError(err: any) {
+            console.log("Error usePrepareContractWrite", err);
+          },
+        }),
+      { wrapper: WagmiWrapperMockConnector }
+    );
+
+    await waitFor(() => expect(config.current.isSuccess).toBeTruthy());
+    const configObj = config.current.config.request;
+
+    console.log("config", config.current.config);
+
+    expect(configObj.abi).not.empty;
+
+    expect(configObj.functionName).toBe("addContact");
+
+    const { result } = renderHook(
+      () =>
+        useContractWrite({
+          ...config.current.config,
+          // account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
+          onSuccess(data: any) {
+            console.log("useContractWrite Success", data);
+          },
+          onError(err: any) {
+            console.log("Error useContractWrite", err);
+          },
+        }),
+      { wrapper: WagmiWrapperMockConnector }
+    );
+
+    // console.log(result);
+
+    await waitFor(() => expect(result.current.write).toBeDefined());
+
+    console.log("Before write contract result.current", result.current);
+
+    console.log("Write contact");
+    await act(async () => {
+      result.current.write?.();
+    });
+
+    console.log("After write contract", result.current);
+
+    await waitFor(() => expect(result.current.isSuccess).toBeTruthy());
+    expect(result.current.data?.hash).toBeDefined();
+
+    // console.log(result.current);
+  });
+
+  it("removeContact config usePrepareContractWrite should work on existing contact", async () => {
+    const { result: address } = renderHook(() => useAccount(), {
+      wrapper: WagmiWrapperMockConnector,
+    });
+
+    await waitFor(() => expect(address.current.isConnected).toBeTruthy());
+
     const { result } = renderHook(
       () =>
         usePrepareContractWrite({
@@ -134,8 +316,8 @@ describe("AddressContainer", () => {
           functionName: "removeContact",
           chainId: baseGoerli.id,
           args: ["0xed52E156aa52453f944505AA51117e2Eb82b0b09"],
-          account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
-          onError(err) {
+          // account: "0x8D37cb3624e1CB8480DceCC7884330a0449Dd9f0",
+          onError(err: any) {
             console.log(err);
           },
         }),

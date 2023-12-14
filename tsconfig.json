@@ -19,7 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node", "jest", "vitest/globals"]
+    "types": ["vitest/globals"]
   },
   "include": ["src", "components", "__tests__", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
