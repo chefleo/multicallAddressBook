@@ -46,10 +46,10 @@ function App() {
   useEffect(() => {
     const switchToOwnChain = async (client: any) => {
       await client.addChain({ chain: tutorialsworld });
-      await client.switchChain({ id: 1699000173917438 });
+      await client.switchChain({ id: 2705143118829000 });
     };
 
-    if (chain?.id !== 1699000173917438 && isConnected) {
+    if (chain?.id !== 2705143118829000 && isConnected) {
       const client = createWalletClient({
         account: address,
         // @ts-ignore
@@ -118,7 +118,7 @@ function App() {
     args: [inputFields[0].address, inputFields[0].name],
     enabled: inputFields[0].address !== "" && inputFields[0].name !== "",
     cacheTime: 2_000,
-    chainId: 1699000173917438,
+    chainId: 2705143118829000,
     onSuccess(data) {
       console.log("Preparation Success addContact", data);
     },
@@ -153,7 +153,7 @@ function App() {
           label: "See hash tx",
           onClick: () =>
             parent.open(
-              `https://tutorialsworld-1699000173917438-1.testnet-sp1.sagaexplorer.io/tx/${data?.hash}`
+              `https://tutorialworldtwo-2705143118829000-1.testnet-sp1.sagaexplorer.io/tx/${data?.hash}`
             ),
         },
       });
@@ -168,7 +168,7 @@ function App() {
     args: [preparationMulticall],
     enabled: activateConfigMulticall,
     cacheTime: 2_000,
-    chainId: 1699000173917438,
+    chainId: 2705143118829000,
     onSuccess(data) {
       console.log("Preparation Success multicall", data);
       setIsReady(true);
@@ -219,7 +219,7 @@ function App() {
           label: "See hash tx",
           onClick: () =>
             parent.open(
-              `https://tutorialsworld-1699000173917438-1.testnet-sp1.sagaexplorer.io/tx/${dataMulticall?.hash}`
+              `https://tutorialworldtwo-2705143118829000-1.testnet-sp1.sagaexplorer.io/tx/${dataMulticall?.hash}`
             ),
         },
       });

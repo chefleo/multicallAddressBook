@@ -18,30 +18,30 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { Chain } from "wagmi";
 
 export const tutorialsworld = {
-  id: 1699000173917438,
-  name: "tutorialsworld",
-  network: "Tutorials World",
+  id: 2705143118829000,
+  name: "tutorialsworldtwo",
+  network: "Tutorials World 2",
   nativeCurrency: {
     decimals: 18,
-    name: "tworld",
-    symbol: "tworld",
+    name: "TWT",
+    symbol: "TWT",
   },
   rpcUrls: {
     public: {
       http: [
-        "https://tutorialsworld-1699000173917438-1.jsonrpc.testnet-sp1.sagarpc.io",
+        "https://tutorialworldtwo-2705143118829000-1.jsonrpc.testnet-sp1.sagarpc.io",
       ],
     },
     default: {
       http: [
-        "https://tutorialsworld-1699000173917438-1.jsonrpc.testnet-sp1.sagarpc.io",
+        "https://tutorialworldtwo-2705143118829000-1.jsonrpc.testnet-sp1.sagarpc.io",
       ],
     },
   },
   blockExplorers: {
     default: {
       name: "Tutorials World Explorer",
-      url: "https://tutorialsworld-1699000173917438-1.testnet-sp1.sagaexplorer.io",
+      url: "https://tutorialworldtwo-2705143118829000-1.testnet-sp1.sagaexplorer.io/",
     },
   },
 } as const satisfies Chain;
