@@ -12,7 +12,7 @@ function Header() {
       <div className="flex items-center">
         <img className="h-10 w-10" src={Saga} alt="Saga" />
         {/* <a href=""></a> */}
-        {location.pathname === "/" ? (
+        {/* {location.pathname === "/" ? (
           <Link to={`faucet`}>
             {" "}
             <button className="text-white font-medium text-sm sm:text-lg ml-5 sm:ml-10 mr-10 px-4 py-2 rounded-2xl bg-[#278ea5] hover:scale-110 transition ease-in">
@@ -26,7 +26,7 @@ function Header() {
               Return to Multicall
             </button>{" "}
           </Link>
-        )}
+        )} */}
       </div>
       <div className="ml-10 flex items-center justify-center text-white">
         <w3m-button balance="hide" label="Connect" />

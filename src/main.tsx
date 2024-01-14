@@ -97,7 +97,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/faucet" element={<Faucet />} />
+          {/* <Route path="/faucet" element={<Faucet />} /> */}
         </Routes>
       </Router>
     </WagmiConfig>
