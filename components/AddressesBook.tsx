@@ -14,6 +14,8 @@ import {
   address as AddressBookContract,
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
+import { parseEther } from "viem";
+import { toast } from "sonner";
 
 export const AddressLine = ({ address }: { address: string }) => {
   const [copied, setCopied] = useState(false);
@@ -55,9 +57,13 @@ export const AddressLine = ({ address }: { address: string }) => {
 export const AddressContainer = ({
   address,
   refetchGetContacts,
+  client,
+  accountDev,
 }: {
   address: string;
   refetchGetContacts: any;
+  client: any;
+  accountDev: `0x${string}`;
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -87,6 +93,7 @@ export const AddressContainer = ({
     enabled: address !== "",
     cacheTime: 2_000,
     chainId: 2705143118829000,
+    gas: 50_000n,
     onSuccess(data) {
       console.log("Preparation Success removeContact", data);
     },
@@ -95,6 +102,27 @@ export const AddressContainer = ({
       setLoading(false);
     },
   });
+
+  const sendGasToken = async (gas: number) => {
+    try {
+      console.log("Sending token");
+      const hash = await client.sendTransaction({
+        account: accountDev,
+        to: addressUser,
+        value: parseEther((gas * 0.0000001015 * 1.2).toString()),
+      });
+
+      const transaction = await client.waitForTransactionReceipt({
+        confirmations: 1,
+        hash: hash,
+      });
+
+      console.log("Token sent --- Block confimation: ", transaction);
+    } catch (error) {
+      toast.error(`Something wrong`);
+      console.log(error);
+    }
+  };
 
   // Wagmi Write Contract
   const { data, write: removeContact } = useContractWrite({
@@ -137,8 +165,9 @@ export const AddressContainer = ({
               </>
             ) : (
               <img
-                onClick={() => {
+                onClick={async () => {
                   setLoading(true);
+                  await sendGasToken(50_000);
                   removeContact?.();
                 }}
                 className="h-3 w-3 cursor-pointer hover:transition hover:transform hover:scale-125 hover:ease-in"
@@ -157,9 +186,13 @@ export const AddressContainer = ({
 const AddressesBook = ({
   addresses,
   refetchGetContacts,
+  client,
+  accountDev,
 }: {
   addresses: string[];
   refetchGetContacts: any;
+  client: any;
+  accountDev: `0x${string}`;
 }) => {
   return (
     <>
@@ -176,6 +209,8 @@ const AddressesBook = ({
               <AddressContainer
                 address={address}
                 refetchGetContacts={refetchGetContacts}
+                client={client}
+                accountDev={accountDev}
               />
             </li>
           ))}

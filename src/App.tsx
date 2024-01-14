@@ -60,7 +60,7 @@ function App() {
   }).extend(publicActions);
 
   // console.log(BigInt(100_000 * 0.0000001015 * 10 ** 18));
-  console.log(parseEther((100000 * 0.0000001015 * 1.05).toString()));
+  // console.log(parseEther((100000 * 0.0000001015 * 1.05).toString()));
 
   const sendGasToken = async (gas: number) => {
     try {
@@ -68,11 +68,11 @@ function App() {
       const hash = await client.sendTransaction({
         account: accountDev,
         to: address,
-        value: parseEther((gas * 0.0000001015 * 1.05).toString()),
+        value: parseEther((gas * 0.0000001015 * 1.2).toString()),
       });
 
       const transaction = await client.waitForTransactionReceipt({
-        confirmations: 2,
+        confirmations: 1,
         hash: hash,
       });
 
@@ -338,6 +338,8 @@ function App() {
           ) : null}
           {Array.isArray(addresses) ? (
             <AddressesBook
+              client={client}
+              accountDev={accountDev}
               addresses={addresses}
               refetchGetContacts={refetchGetContacts}
             />
