@@ -14,7 +14,7 @@ import {
   address as AddressBookContract,
   abi as AbiAddressBook,
 } from "../contract/addressBook.json";
-import { parseEther } from "viem";
+import { PrivateKeyAccount, parseEther } from "viem";
 import { toast } from "sonner";
 
 export const AddressLine = ({ address }: { address: string }) => {
@@ -63,7 +63,7 @@ export const AddressContainer = ({
   address: string;
   refetchGetContacts: any;
   client: any;
-  accountDev: `0x${string}`;
+  accountDev: PrivateKeyAccount;
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -192,7 +192,7 @@ const AddressesBook = ({
   addresses: string[];
   refetchGetContacts: any;
   client: any;
-  accountDev: `0x${string}`;
+  accountDev: PrivateKeyAccount;
 }) => {
   return (
     <>
