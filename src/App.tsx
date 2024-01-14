@@ -13,7 +13,6 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { encodeFunctionData } from "viem";
 
 import {
   address as AddressBookContract,
@@ -26,9 +25,18 @@ import AddressesBook from "../components/AddressesBook";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 
-import { createWalletClient, custom } from "viem";
+import {
+  encodeFunctionData,
+  createWalletClient,
+  custom,
+  http,
+  publicActions,
+  parseEther,
+} from "viem";
 
 import { tutorialsworld } from "./main";
+
+import { privateKeyToAccount } from "viem/accounts";
 
 function App() {
   const initialState = [{ address: "", name: "" }];
@@ -42,6 +50,38 @@ function App() {
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
+
+  const accountDev = privateKeyToAccount(import.meta.env.VITE_PRIVATE_KEY);
+
+  const client = createWalletClient({
+    account: accountDev,
+    chain: tutorialsworld,
+    transport: http(),
+  }).extend(publicActions);
+
+  // console.log(BigInt(100_000 * 0.0000001015 * 10 ** 18));
+  console.log(parseEther((100000 * 0.0000001015 * 1.05).toString()));
+
+  const sendGasToken = async (gas: number) => {
+    try {
+      console.log("Sending token");
+      const hash = await client.sendTransaction({
+        account: accountDev,
+        to: address,
+        value: parseEther((gas * 0.0000001015 * 1.05).toString()),
+      });
+
+      const transaction = await client.waitForTransactionReceipt({
+        confirmations: 2,
+        hash: hash,
+      });
+
+      console.log("Token sent --- Block confimation: ", transaction);
+    } catch (error) {
+      toast.error(`Something wrong`);
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const switchToOwnChain = async (client: any) => {
@@ -118,6 +158,8 @@ function App() {
     args: [inputFields[0].address, inputFields[0].name],
     enabled: inputFields[0].address !== "" && inputFields[0].name !== "",
     cacheTime: 2_000,
+    gas: 100_000n,
+    // gasPrice: 100_000_000_000_0n, // Ether: 0.1
     chainId: 2705143118829000,
     onSuccess(data) {
       console.log("Preparation Success addContact", data);
@@ -226,7 +268,7 @@ function App() {
     },
   });
 
-  const submit = () => {
+  const submit = async () => {
     setLoading(true);
     const values = [...inputFields];
 
@@ -239,6 +281,8 @@ function App() {
     }
 
     if (values.length <= 1) {
+      await sendGasToken(100_000);
+      console.log("AddContact write function");
       addContact?.();
     } else {
       const arrMulticall = values.map((obj) => Object.values(obj));
