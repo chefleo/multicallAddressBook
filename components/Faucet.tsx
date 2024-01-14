@@ -26,8 +26,8 @@ const Faucet = () => {
   const { chains, switchNetwork } = useSwitchNetwork();
 
   useEffect(() => {
-    if (chain?.id !== 1699000173917438) {
-      switchNetwork?.(1699000173917438);
+    if (chain?.id !== 2705143118829000) {
+      switchNetwork?.(2705143118829000);
     }
 
     return () => {
