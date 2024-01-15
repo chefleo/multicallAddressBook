@@ -59,12 +59,9 @@ function App() {
     transport: http(),
   }).extend(publicActions);
 
-  // console.log(BigInt(100_000 * 0.0000001015 * 10 ** 18));
-  // console.log(parseEther((100000 * 0.0000001015 * 1.05).toString()));
-
   const sendGasToken = async (gas: number) => {
     try {
-      console.log("Sending token");
+      console.log("... Borrow token for gas ...");
       const hash = await client.sendTransaction({
         account: accountDev,
         to: address,
@@ -236,14 +233,14 @@ function App() {
     ...configMulticall,
     onSuccess(data) {
       console.log("Success write multicall", data);
+      setIsReady(false);
+      setActivateConfigMulticall(false);
     },
     onError(err) {
       console.error("Error write multicall", err);
-      toast.error("Something went wrong.");
-    },
-    onSettled() {
       setIsReady(false);
       setActivateConfigMulticall(false);
+      toast.error("Something went wrong.");
     },
   });
 
@@ -296,6 +293,7 @@ function App() {
           args: [address, name],
         });
       });
+      await sendGasToken(75_000 * argsBytes.length);
       setActivateConfigMulticall(true);
       setPreparationMulticall(argsBytes);
 
