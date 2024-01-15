@@ -15,6 +15,8 @@ import {
   abi as AbiFaucet,
 } from "../contract/faucetSaga.json";
 
+import { LoadingMessages } from "../src/App";
+
 const Faucet = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,10 @@ const Faucet = () => {
   });
   const { chain } = useNetwork();
   const { chains, switchNetwork } = useSwitchNetwork();
+
+  const [loadingMessage, setLoadingMessage] = useState(
+    LoadingMessages.SendingToken
+  );
 
   useEffect(() => {
     if (chain?.id !== 2705143118829000) {
@@ -116,7 +122,7 @@ const Faucet = () => {
             </div>
           </div>
           {loading ? (
-            <Loading isFaucetLoading={true} />
+            <Loading loadingMessage={loadingMessage} isFaucetLoading={true} />
           ) : (
             <button
               onClick={() => faucet?.()}
