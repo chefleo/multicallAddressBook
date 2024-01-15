@@ -38,6 +38,12 @@ import { tutorialsworld } from "./main";
 
 import { privateKeyToAccount } from "viem/accounts";
 
+export enum LoadingMessages {
+  SendingToken = "Borrowing TWT 1/3",
+  requestTransaction = "Please sign to execute the transaction 2/3",
+  executingTransaction = "Executing transaction, please wait 3/3",
+}
+
 function App() {
   const initialState = [{ address: "", name: "" }];
   const [inputFields, setInputFields] = useState(initialState);
@@ -46,6 +52,9 @@ function App() {
   const [activateConfigMulticall, setActivateConfigMulticall] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(
+    LoadingMessages.SendingToken
+  );
 
   // Wagmi State Variables Hooks
   const { address, isConnected } = useAccount();
@@ -171,6 +180,7 @@ function App() {
     ...config,
     onSuccess(data) {
       console.log("Success write addContact", data);
+      setLoadingMessage(LoadingMessages.executingTransaction);
     },
     onError() {
       setLoading(false);
@@ -187,6 +197,7 @@ function App() {
       refetchGetContacts();
       setInputFields(initialState);
       setLoading(false);
+      setLoadingMessage(LoadingMessages.SendingToken);
       return toast.success(`Added contact`, {
         action: {
           label: "See hash tx",
@@ -233,6 +244,7 @@ function App() {
     ...configMulticall,
     onSuccess(data) {
       console.log("Success write multicall", data);
+      setLoadingMessage(LoadingMessages.executingTransaction);
       setIsReady(false);
       setActivateConfigMulticall(false);
     },
@@ -253,6 +265,7 @@ function App() {
       setInputFields(initialState);
       setPreparationMulticall([""]);
       setLoading(false);
+      setLoadingMessage(LoadingMessages.SendingToken);
       return toast.success(`Multicall successfull`, {
         action: {
           label: "See hash tx",
@@ -280,6 +293,7 @@ function App() {
     if (values.length <= 1) {
       await sendGasToken(100_000);
       console.log("AddContact write function");
+      setLoadingMessage(LoadingMessages.requestTransaction);
       addContact?.();
     } else {
       const arrMulticall = values.map((obj) => Object.values(obj));
@@ -294,6 +308,8 @@ function App() {
         });
       });
       await sendGasToken(75_000 * argsBytes.length);
+
+      setLoadingMessage(LoadingMessages.requestTransaction);
       setActivateConfigMulticall(true);
       setPreparationMulticall(argsBytes);
 
@@ -323,7 +339,10 @@ function App() {
           {inputFields[0].address && inputFields[0].name && isConnected ? (
             <div className="flex justify-center items-center mt-8">
               {loading ? (
-                <Loading isFaucetLoading={false} />
+                <Loading
+                  loadingMessage={loadingMessage}
+                  isFaucetLoading={false}
+                />
               ) : (
                 <button
                   onClick={() => submit()}

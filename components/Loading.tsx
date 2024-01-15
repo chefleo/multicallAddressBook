@@ -1,6 +1,14 @@
 import React from "react";
 
-function Loading({ isFaucetLoading }: { isFaucetLoading: boolean }) {
+import { LoadingMessages } from "../src/App";
+
+function Loading({
+  loadingMessage,
+  isFaucetLoading,
+}: {
+  loadingMessage: LoadingMessages;
+  isFaucetLoading: boolean;
+}) {
   return (
     <>
       <div
@@ -10,6 +18,8 @@ function Loading({ isFaucetLoading }: { isFaucetLoading: boolean }) {
             : "bg-slate-800 w-1/2 px-3 py-4 rounded-xl"
         }  text-white font-semibold`}
       >
+        {!isFaucetLoading && <p className="pr-3">{loadingMessage}</p>}
+        {/* Spinner */}
         <div
           className={`${
             isFaucetLoading ? "h-7 w-7" : "h-5 w-5"
