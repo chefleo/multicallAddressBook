@@ -74,7 +74,7 @@ function App() {
       const hash = await client.sendTransaction({
         account: accountDev,
         to: address,
-        value: parseEther((gas * 0.0000001015 * 1.2).toString()),
+        value: parseEther((gas * 0.00005).toString()), //  0.0000001015
       });
 
       const transaction = await client.waitForTransactionReceipt({
@@ -165,7 +165,7 @@ function App() {
     enabled: inputFields[0].address !== "" && inputFields[0].name !== "",
     cacheTime: 2_000,
     gas: 100_000n,
-    // gasPrice: 100_000_000_000_0n, // Ether: 0.1
+    // gasPrice: parseEther("0.00005"), // Ether: 0.1 -- Normal: 0.0000001
     chainId: 2705143118829000,
     onSuccess(data) {
       console.log("Preparation Success addContact", data);
