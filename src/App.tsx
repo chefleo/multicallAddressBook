@@ -74,7 +74,7 @@ function App() {
       const hash = await client.sendTransaction({
         account: accountDev,
         to: address,
-        value: parseEther((gas * 0.00005).toString()), //  0.0000001015
+        value: parseEther((gas * 0.0000001015).toString()),
       });
 
       const transaction = await client.waitForTransactionReceipt({
